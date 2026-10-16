@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Los Juegos del Negromante · Halloween 2026</title>
+<meta name="theme-color" content="#050407">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Creepster&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- Calavera reutilizable (el mismo trazado se usa para dibujar la tarjeta PNG) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="skull" viewBox="0 0 100 100">
+    <path fill-rule="evenodd" d="M50 5C26 5 11 21 11 43c0 12 5 20 13 26v15c0 4 3 7 7 7h38c4 0 7-3 7-7V69c8-6 13-14 13-26C89 21 74 5 50 5ZM36 34a9.5 11 0 1 0 .1 0ZM64 34a9.5 11 0 1 0 .1 0ZM50 51l-6 13h12ZM37 79h3.5v11H37ZM48.2 79h3.6v11h-3.6ZM59.5 79H63v11h-3.5Z"/>
+  </symbol>
+</svg>
+
+<div class="fog" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="embers" id="embers" aria-hidden="true"></div>
+
+<div class="sound nocap">
+  <button type="button" id="sndBtn" aria-pressed="false">Ambiente: apagado</button>
+  <label class="vol"><span class="sr">Volumen</span><input type="range" id="sndVol" min="0" max="100" value="50"></label>
+</div>
+
+<!-- 1. ENTRADA -->
+<section id="entrada" class="screen">
+  <img class="skull big" src="img/calavera-negromante.png" alt="" width="800" height="800" decoding="async">
+  <div class="rule"><span></span><svg aria-hidden="true"><use href="#skull"/></svg><span></span></div>
+  <h1 class="title"><span class="t1">Los juegos del</span><span class="t2">Negromante</span></h1>
+  <p class="sub">Halloween 2026 · Segunda edición</p>
+  <button type="button" class="btn btn-red" id="abrir">ABRIR LA CONVOCATORIA</button>
+</section>
+
+<main id="juego" hidden>
+  <button type="button" class="btn btn-ghost back nocap" id="volverInicio">← VOLVER AL INICIO</button>
+
+  <!-- 2. LA CARTA -->
+  <section id="carta" class="sec">
+    <div class="rule"><span></span><svg aria-hidden="true"><use href="#skull"/></svg><span></span></div>
+    <h2 class="drip">Has sido seleccionado</h2>
+    <button type="button" class="btn btn-ghost" id="mostrarTodo">MOSTRAR TODO EL TEXTO</button>
+    <article id="letter" class="letter"></article>
+  </section>
+
+  <!-- 3. NORMAS -->
+  <section id="normas" class="sec">
+    <h2 class="drip">Mis normas</h2>
+    <p class="lead">Instrucciones para aceptar la invitación <em class="r">(imprescindible)</em>:</p>
+    <ol id="rules" class="rules"></ol>
+  </section>
+
+  <!-- 4. CONFIRMACIÓN -->
+  <section id="confirmar" class="sec">
+    <svg class="skull mid" aria-hidden="true"><use href="#skull"/></svg>
+    <h2 class="drip">¿ACEPTAS JUGAR?</h2>
+    <p class="lead">Firma tu asistencia, guarda tu ticket y presenta <em class="r">tu alma</em> a <em class="p">la noche de pruebas</em>.</p>
+    <div class="sign">
+      <label for="nombre">Firma aquí (tu nombre):</label>
+      <input id="nombre" type="text" maxlength="28" autocomplete="off" autocapitalize="words" placeholder="Escribe tu nombre" aria-describedby="err">
+      <p id="err" class="err" role="alert"></p>
+    </div>
+    <div class="choices">
+      <button type="button" class="btn btn-red" id="acepto">ACEPTO JUGAR</button>
+      <button type="button" class="btn btn-purple" id="rechazo">RECHAZO LA CONVOCATORIA</button>
+    </div>
+  </section>
+</main>
+
+<!-- PANTALLA FINAL -->
+<section id="final" class="screen final" hidden>
+  <p class="kicker nocap" id="fKicker"></p>
+  <h2 class="drip nocap" id="fTitle"></h2>
+  <p class="verdict nocap" id="fLine"></p>
+
+  <div class="ticket" id="card" aria-label="Tarjeta de confirmación">
+    <div class="tmain">
+      <svg class="skull" aria-hidden="true"><use href="#skull"/></svg>
+      <div class="tinfo">
+        <p class="tevent">Los juegos del Negromante · 2026</p>
+        <p class="tlabel">JUGADOR</p>
+        <p class="tname" id="cName"></p>
+        <p class="tdec" id="cDec"></p>
+        <p class="tdate" id="cDate"></p>
+      </div>
+    </div>
+    <div class="tstub"><i></i></div>
+  </div>
+
+  <p class="send nocap" id="fSend"></p>
+  <div class="choices nocap">
+    <button type="button" class="btn btn-red" id="descargar">DESCARGAR MI CONFIRMACIÓN</button>
+    <button type="button" class="btn btn-purple" id="captura">HACER CAPTURA DE PANTALLA</button>
+  </div>
+  <p class="status nocap" id="dlStatus" role="status"></p>
+  <button type="button" class="btn btn-ghost nocap" id="volverDecidir">← CAMBIAR MI RESPUESTA</button>
+  <button type="button" class="btn btn-ghost exit" id="salirCap" hidden>VOLVER</button>
+</section>
+
+<footer class="foot nocap">LOS JUEGOS DEL NEGROMANTE · HALLOWEEN 2026</footer>
+
+<!-- MODALES PROPIOS -->
+<div class="modal" id="mConfirm" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="mcT">
+    <h3 id="mcT">¿Sellar tu respuesta?</h3>
+    <p id="mcP"></p>
+    <div class="choices">
+      <button type="button" class="btn btn-red" id="mcOk">SÍ, SELLAR</button>
+      <button type="button" class="btn btn-ghost" id="mcNo">VOLVER ATRÁS</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="mCap" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="mpT">
+    <h3 id="mpT">Haz tu captura</h3>
+    <p>Esta web no puede capturar la pantalla por ti: tienes que hacerlo tú.</p>
+    <p><b>iPhone:</b> pulsa a la vez el botón lateral y subir volumen.<br><b>Android:</b> pulsa a la vez encender y bajar volumen.<br><b>Ordenador:</b> usa la herramienta de recortes de tu sistema.</p>
+    <p>Pulsa «Mostrar solo la tarjeta» para despejar la pantalla y haz la captura.</p>
+    <div class="choices">
+      <button type="button" class="btn btn-red" id="mpOk">MOSTRAR SOLO LA TARJETA</button>
+      <button type="button" class="btn btn-ghost" id="mpNo">CERRAR</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>
